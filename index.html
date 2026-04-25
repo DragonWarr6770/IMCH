@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slidable BG App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* The sliding animation logic */
+        @keyframes slide {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-slide {
+            animation: slide 20s linear infinite;
+        }
+        .bg-container {
+            display: none; /* Hidden until image is uploaded */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 200%; /* Double width for seamless loop */
+            height: 100vh;
+            z-index: -1;
+        }
+        .bg-part {
+            width: 50%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+<body class="bg-zinc-900 text-white overflow-hidden">
+
+    <div id="bgContainer" class="bg-container animate-slide">
+        <div id="bg1" class="bg-part"></div>
+        <div id="bg2" class="bg-part"></div>
+    </div>
+
+    <div id="uploadScreen" class="flex flex-col items-center justify-center min-h-screen">
+        <label class="cursor-pointer bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-bold transition-all">
+            UPLOAD BACKGROUND
+            <input type="file" id="imageInput" class="hidden" accept="image/*">
+        </label>
+    </div>
+
+    <button id="chatBtn" class="hidden fixed bottom-6 right-6 p-4 bg-blue-600 rounded-full shadow-xl z-50">
+        💬
+    </button>
+
+    <div id="chatWindow" class="hidden fixed bottom-24 right-6 w-80 h-96 bg-white rounded-xl shadow-2xl flex flex-col z-50 text-black">
+        <div class="bg-blue-600 p-4 text-white font-bold rounded-t-xl">Chat Support</div>
+        <div class="flex-1 p-4 overflow-y-auto bg-gray-50">
+            <div class="bg-gray-200 p-2 rounded-lg text-sm inline-block">Welcome! How can I help?</div>
+        </div>
+        <div class="p-3 border-t flex gap-2">
+            <input type="text" placeholder="Message..." class="flex-1 border p-2 rounded text-sm focus:outline-none">
+            <button class="text-blue-600 font-bold">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const imageInput = document.getElementById('imageInput');
+        const bgContainer = document.getElementById('bgContainer');
+        const uploadScreen = document.getElementById('uploadScreen');
+        const chatBtn = document.getElementById('chatBtn');
+        const chatWindow = document.getElementById('chatWindow');
+        const bg1 = document.getElementById('bg1');
+        const bg2 = document.getElementById('bg2');
+
+        // Handle Image Upload
+        imageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const imgUrl = `url('${event.target.result}')`;
+                    bg1.style.backgroundImage = imgUrl;
+                    bg2.style.backgroundImage = imgUrl;
+                    
+                    // Show app, hide upload
+                    bgContainer.style.display = 'flex';
+                    chatBtn.classList.remove('hidden');
+                    uploadScreen.classList.add('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Toggle Chat
+        chatBtn.addEventListener('click', () => {
+            chatWindow.classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>
