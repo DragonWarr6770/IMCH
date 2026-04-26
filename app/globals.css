@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #1a1614;
+  --foreground: #f5f5f5;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  /* This creates a soft radial gradient to look like light hitting the ground */
+  background: radial-gradient(circle at center, #241d1a 0%, #1a1614 100%);
+  min-height: 100vh;
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(0.98); }
+}
+
+.animate-flicker {
+  animation: flicker 3s infinite ease-in-out;
+}
+
+/* Custom scrollbar to match the campfire theme */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #1a1614;
+}
+::-webkit-scrollbar-thumb {
+  background: #4a4440;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #ff5f1f;
+}
