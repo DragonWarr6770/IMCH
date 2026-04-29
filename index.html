@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>CLASH_OF_CHATS // VERCEL_EDITION</title>
+    <title>CLASH_OF_CHATS // V2_STABLE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://js.pusher.com/8.4.0/pusher.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
 
         body { 
-            background: #4b3621; /* Dark wood fallback */
+            background: #2b1d0e; 
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -17,125 +17,157 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
-            transition: background 0.8s ease-in-out;
+            transition: background 0.5s ease;
         }
 
-        .coc-header { font-family: 'Luckiest Guy', cursive; text-shadow: 2px 2px 0 #000; color: #fff; }
+        .coc-font { font-family: 'Luckiest Guy', cursive; text-shadow: 2px 2px 0 #000; }
         
         .stone-panel { 
-            background: rgba(45, 45, 45, 0.85); 
-            border: 4px solid #7a7a7a; 
-            border-radius: 12px;
-            box-shadow: inset 0 0 15px #000, 0 5px 15px rgba(0,0,0,0.5);
-        }
-
-        .chat-bubble {
-            background: #fff;
-            border-radius: 10px;
-            color: #333;
-            padding: 8px 12px;
-            position: relative;
-            border: 2px solid #ddd;
-            max-width: 80%;
+            background: rgba(40, 40, 40, 0.9); 
+            border: 4px solid #5a5a5a; 
+            border-bottom-width: 8px;
+            border-radius: 15px;
         }
 
         .btn-gold {
-            background: linear-gradient(to bottom, #ffcc33 0%, #e6ac00 100%);
-            border: 3px solid #664400;
-            border-radius: 8px;
+            background: linear-gradient(to bottom, #ffcc33 0%, #d49a00 100%);
+            border: 2px solid #5c3d00;
+            border-bottom-width: 5px;
+            border-radius: 10px;
             color: #fff;
-            text-shadow: 1px 1px 1px #000;
+            text-shadow: 1px 1px 2px #000;
             font-family: 'Luckiest Guy', cursive;
-            transition: transform 0.1s;
         }
+        .btn-gold:active { border-bottom-width: 2px; transform: translateY(3px); }
 
-        .btn-gold:active { transform: scale(0.95); }
+        .btn-blue {
+            background: linear-gradient(to bottom, #4da6ff 0%, #0066cc 100%);
+            border: 2px solid #003366;
+            border-bottom-width: 5px;
+            border-radius: 10px;
+            color: #fff;
+            text-shadow: 1px 1px 2px #000;
+            font-family: 'Luckiest Guy', cursive;
+        }
+        .btn-blue:active { border-bottom-width: 2px; transform: translateY(3px); }
 
-        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e6ac00; border-radius: 4px; }
+        .chat-bubble {
+            background: #fdfdfd;
+            border-radius: 12px;
+            border: 3px solid #ccc;
+            padding: 10px;
+            color: #222;
+            box-shadow: 3px 3px 0 rgba(0,0,0,0.2);
+            position: relative;
+        }
     </style>
 </head>
-<body class="p-2 md:p-4" id="main-body">
+<body class="p-3" id="main-body">
 
-    <header class="flex justify-between items-center mb-2 px-4 py-2 bg-black/40 rounded-lg">
-        <h1 class="coc-header text-2xl tracking-wide uppercase">Clash of Chats</h1>
+    <header class="flex justify-between items-center mb-3">
+        <div class="bg-black/50 p-2 rounded-lg border border-yellow-600/50">
+            <h1 class="coc-font text-2xl text-white uppercase tracking-wider">Clash of Chats</h1>
+        </div>
         <div class="flex gap-2">
-            <span class="text-xs bg-green-600 px-2 py-1 rounded border border-white text-white font-bold">OLORIN</span>
+            <button onclick="copyInvite()" class="btn-blue px-4 py-1 text-xs">RECRUIT</button>
+            <button onclick="clearLog()" class="btn-gold px-4 py-1 text-xs" style="background: linear-gradient(to bottom, #ff4d4d, #b30000); border-color: #660000;">CLEAR LOG</button>
         </div>
     </header>
 
-    <main id="feed" class="flex-1 overflow-y-auto stone-panel p-4 space-y-3 custom-scrollbar mb-4"></main>
+    <main id="feed" class="flex-1 overflow-y-auto stone-panel p-4 space-y-4 mb-4 scroll-smooth"></main>
 
-    <footer class="stone-panel p-3 grid grid-cols-12 gap-2 bg-gray-800">
-        <label class="col-span-3 btn-gold flex items-center justify-center cursor-pointer text-sm">
-            SET BG
-            <input type="file" id="img-up" class="hidden" accept="image/*">
-        </label>
-        
-        <input type="text" id="msg" placeholder="Write a message..." 
-               class="col-span-6 bg-white/10 border-2 border-gray-600 rounded-lg px-4 text-white outline-none focus:border-yellow-500">
-        
-        <button onclick="sendBurst()" class="col-span-3 btn-gold text-lg">ATTACK</button>
+    <footer class="stone-panel p-4 bg-gray-900/90">
+        <div class="flex gap-3 h-14">
+            <label class="w-20 btn-blue flex items-center justify-center cursor-pointer text-center leading-tight">
+                <span class="text-[10px]">NEW<br>MAP</span>
+                <input type="file" id="img-up" class="hidden" accept="image/*">
+            </label>
+            
+            <div class="flex-1 relative">
+                <input type="text" id="msg" placeholder="Type battle orders..." 
+                       class="w-full h-full bg-white rounded-lg border-4 border-gray-400 px-4 font-bold text-gray-800 outline-none focus:border-yellow-500">
+            </div>
+            
+            <button onclick="sendBurst()" class="w-24 btn-gold text-xl">ATTACK</button>
+        </div>
     </footer>
 
     <script>
-        // --- RELAY CONFIG ---
+        // --- AUTH & SYNC ---
         const pusher = new Pusher('3f9a95e2f8c70c6a4c0e', { cluster: 'ap2' });
         const channel = pusher.subscribe('my-channel');
         const feed = document.getElementById('feed');
         const body = document.getElementById('main-body');
 
-        // --- GLOBAL SYNC: LISTENING ---
+        // --- GLOBAL BROADCAST LISTENER ---
         channel.bind('my-event', (data) => {
             if (data.isImage) {
                 // UPDATE BACKGROUND GLOBALLY
                 body.style.backgroundImage = `url('${data.content}')`;
-                const notice = document.createElement('div');
-                notice.className = "text-center text-xs text-yellow-400 font-bold italic";
-                notice.innerText = `[ SYSTEM: ${data.user} UPDATED THE WORLD MAP ]`;
-                feed.appendChild(notice);
+                systemNotice(`${data.user} CHANGED THE BATTLEFIELD!`);
             } else {
-                // RENDER CHAT BUBBLE
-                const wrapper = document.createElement('div');
-                wrapper.className = "flex flex-col items-start mb-2";
-                
-                const label = `<span class="text-[10px] font-bold text-yellow-500 ml-1 mb-1 uppercase">${data.user}</span>`;
-                const bubble = `<div class="chat-bubble font-bold shadow-md">${data.content}</div>`;
-                
-                wrapper.innerHTML = label + bubble;
-                feed.appendChild(wrapper);
+                createBubble(data.user, data.content);
             }
             feed.scrollTop = feed.scrollHeight;
         });
 
-        // --- TRANSMIT LOGIC ---
+        // --- UTILITY FUNCTIONS ---
+        function createBubble(user, text) {
+            const div = document.createElement('div');
+            div.className = "flex flex-col items-start max-w-[85%]";
+            div.innerHTML = `
+                <span class="text-[10px] font-bold text-yellow-500 ml-2 mb-1 uppercase">${user}</span>
+                <div class="chat-bubble font-bold text-sm">${text}</div>
+            `;
+            feed.appendChild(div);
+        }
+
+        function systemNotice(msg) {
+            const notice = document.createElement('div');
+            notice.className = "w-full text-center py-2 bg-yellow-500/20 rounded border border-yellow-500/40 text-yellow-400 text-[10px] font-bold uppercase italic";
+            notice.innerText = msg;
+            feed.appendChild(notice);
+        }
+
         async function sendBurst(customData = null) {
-            const msgInput = document.getElementById('msg');
+            const input = document.getElementById('msg');
             const payload = customData || {
                 user: 'OLORIN',
-                content: msgInput.value,
+                content: input.value,
                 isImage: false
             };
 
             if (!payload.content) return;
 
-            // Hits your Vercel /api/transmit
             await fetch('/api/transmit', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
-            if (!customData) msgInput.value = '';
+            if (!customData) input.value = '';
         }
 
-        // --- IMAGE BACKGROUND HANDLER ---
-        document.getElementById('img-up').addEventListener('change', function(e) {
+        function clearLog() { feed.innerHTML = ''; systemNotice("BATTLE LOG PURGED LOCALLY"); }
+
+        function copyInvite() {
+            navigator.clipboard.writeText(window.location.href);
+            alert("INVITE LINK COPIED! SEND TO YOUR CLAN.");
+        }
+
+        // --- HANDLERS ---
+        document.getElementById('img-up').addEventListener('change', (e) => {
             const reader = new FileReader();
             reader.onload = (event) => {
                 sendBurst({ user: 'OLORIN', content: event.target.result, isImage: true });
             };
             reader.readAsDataURL(e.target.files[0]);
+        });
+
+        document.getElementById('msg').addEventListener('keypress', (e) => { if(e.key === 'Enter') sendBurst(); });
+    </script>
+</body>
+</html>.target.files[0]);
         });
 
         // --- ENTER KEY ---
