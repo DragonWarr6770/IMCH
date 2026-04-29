@@ -1,0 +1,9 @@
+{
+  "name": "image-chat-3036",
+  "version": "1.0.0",
+  "description": "Global neural-link via Pusher",
+  "main": "api/transmit.js",
+  "dependencies": {
+    "pusher": "^5.2.0"
+  }
+}
