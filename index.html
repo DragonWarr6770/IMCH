@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>IM_CHAT // PUSHER_NODE_3036</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://js.pusher.com/8.4.0/pusher.min.js"></script>
+    <style>
+        body { background: #020202; color: #00f2ff; font-family: 'Courier New', monospace; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        .holo-border { border: 1px solid #00f2ff; box-shadow: 0 0 15px #00f2ff33; }
+        .glitch { text-shadow: 2px 0 #ff00c1, -2px 0 #00fff9; }
+        .feed-container::-webkit-scrollbar { width: 4px; }
+        .feed-container::-webkit-scrollbar-thumb { background: #00f2ff; border-radius: 10px; }
+    </style>
+</head>
+<body class="p-4 md:p-6">
+    <header class="flex justify-between border-b border-cyan-900 pb-4 mb-4">
+        <div>
+            <h1 class="glitch font-bold text-xl uppercase tracking-tighter">Image_Chat_OS</h1>
+            <p class="text-[10px] text-cyan-600">ENCRYPTED_RELAY: PUSHER_AP2</p>
+        </div>
+        <div class="text-right text-[10px] opacity-50 uppercase">User: Olorin</div>
+    </header>
+
+    <main id="feed" class="flex-1 overflow-y-auto holo-border bg-cyan-950/5 p-4 space-y-4 feed-container"></main>
+
+    <footer class="mt-4 grid grid-cols-12 gap-2">
+        <label class="col-span-2 holo-border flex items-center justify-center cursor-pointer hover:bg-cyan-900/30 transition">
+            <span class="text-xs font-bold">[IMG]</span>
+            <input type="file" id="img-up" class="hidden" accept="image/*">
+        </label>
+        <input type="text" id="msg" placeholder="Type transmission..." class="col-span-8 bg-transparent holo-border px-4 py-3 outline-none focus:bg-cyan-900/10">
+        <button onclick="sendBurst()" class="col-span-2 holo-border bg-cyan-900/20 hover:bg-cyan-900 font-bold text-xs uppercase">Send</button>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
