@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Hat | Professional Asset Overlay Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --canvas-bg: #1e1e1e;
+            --accent-blue: #3b82f6;
+        }
+
+        body {
+            background-color: #0f172a;
+            color: #f1f5f9;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        .canvas-container {
+            background-image: 
+                linear-gradient(45deg, #2d3748 25%, transparent 25%), 
+                linear-gradient(-45deg, #2d3748 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #2d3748 75%), 
+                linear-gradient(-45deg, transparent 75%, #2d3748 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 10px;
+        }
+
+        .tool-card {
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+        .tool-card:hover {
+            border-color: var(--accent-blue);
+            background: #1e293b;
+        }
+    </style>
+</head>
+<body class="h-screen overflow-hidden flex flex-col">
+
+    <header class="border-b border-slate-800 bg-slate-900 px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <div class="bg-blue-600 p-2 rounded-lg">
+                <i class="fas fa-hat-wizard text-xl"></i>
+            </div>
+            <h1 class="text-xl font-bold tracking-tight">IMAGE HAT <span class="text-blue-500 text-sm font-normal">v2.0</span></h1>
+        </div>
+        
+        <div class="flex gap-4">
+            <button onclick="exportImage()" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2 rounded-md font-medium flex items-center gap-2 transition">
+                <i class="fas fa-download"></i> Export Result
+            </button>
+            <button class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-md transition">
+                <i class="fas fa-cog"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-1 flex overflow-hidden">
+        
+        <aside class="w-80 border-r border-slate-800 bg-slate-900 flex flex-col">
+            <div class="p-6 space-y-8 overflow-y-auto custom-scrollbar">
+                
+                <section>
+                    <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">Base Layer</h3>
+                    <div class="p-4 border-2 border-dashed border-slate-700 rounded-xl hover:border-blue-500 transition cursor-pointer text-center group" id="drop-zone">
+                        <input type="file" id="base-upload" class="hidden" accept="image/*">
+                        <label for="base-upload" class="cursor-pointer">
+                            <i class="fas fa-cloud-upload-alt text-3xl text-slate-600 group-hover:text-blue-500 mb-2"></i>
+                            <p class="text-sm text-slate-400">Upload Main Photo</p>
+                        </label>
+                    </div>
+                </section>
+
+                <section>
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Hat Library</h3>
+                        <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-slate-400">8 Items</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="tool-card p-2 rounded-lg bg-slate-800/50 cursor-pointer text-center">
+                            <div class="h-16 flex items-center justify-center mb-2">🎓</div>
+                            <span class="text-xs text-slate-300">Graduation</span>
+                        </div>
+                        <div class="tool-card p-2 rounded-lg bg-slate-800/50 cursor-pointer text-center">
+                            <div class="h-16 flex items-center justify-center mb-2">🎩</div>
+                            <span class="text-xs text-slate-300">Top Hat</span>
+                        </div>
+                        <div class="tool-card p-2 rounded-lg bg-slate-800/50 cursor-pointer text-center">
+                            <div class="h-16 flex items-center justify-center mb-2">🤠</div>
+                            <span class="text-xs text-slate-300">Cowboy</span>
+                        </div>
+                        <div class="tool-card p-2 rounded-lg bg-slate-800/50 cursor-pointer text-center">
+                            <div class="h-16 flex items-center justify-center mb-2">👷</div>
+                            <span class="text-xs text-slate-300">Hard Hat</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="space-y-4">
+                    <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Layer Controls</h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between text-xs mb-1">
+                            <span>Scale</span>
+                            <span id="scale-val">100%</span>
+                        </div>
+                        <input type="range" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500">
+                        
+                        <div class="flex justify-between text-xs mb-1">
+                            <span>Rotation</span>
+                            <span id="rot-val">0°</span>
+                        </div>
+                        <input type="range" min="-180" max="180" value="0" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500">
+                    </div>
+                </section>
+
+            </div>
+            
+            <div class="mt-auto p-4 border-t border-slate-800 bg-slate-950/50">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center">
+                        <i class="fas fa-user text-xs"></i>
+                    </div>
+                    <div class="text-xs">
+                        <p class="text-slate-300 font-medium">Draft Session</p>
+                        <p class="text-slate-500">Auto-save enabled</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <section class="flex-1 canvas-container flex items-center justify-center p-12 relative">
+            <div class="absolute top-6 left-6 flex gap-2">
+                <button class="bg-slate-900/80 backdrop-blur border border-slate-700 p-2 rounded hover:bg-slate-800 transition" title="Zoom In">
+                    <i class="fas fa-search-plus"></i>
+                </button>
+                <button class="bg-slate-900/80 backdrop-blur border border-slate-700 p-2 rounded hover:bg-slate-800 transition" title="Zoom Out">
+                    <i class="fas fa-search-minus"></i>
+                </button>
+            </div>
+
+            <div id="canvas-wrapper" class="relative shadow-2xl ring-1 ring-slate-700 bg-white overflow-hidden" style="width: 600px; height: 600px;">
+                <canvas id="main-canvas" width="600" height="600" class="block"></canvas>
+                
+                <div id="empty-state" class="absolute inset-0 flex flex-col items-center justify-center text-slate-400 pointer-events-none">
+                    <i class="fas fa-image text-5xl mb-4 opacity-20"></i>
+                    <p class="text-sm">Upload an image to get started</p>
+                </div>
+            </div>
+
+            <div class="absolute bottom-6 right-6 text-[10px] text-slate-500 bg-slate-900/50 px-3 py-1 rounded-full border border-slate-800">
+                Canvas: 600x600px | Engine: WebGL/2D | Layers: 1
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        const canvas = document.getElementById('main-canvas');
+        const ctx = canvas.getContext('2d');
+        const upload = document.getElementById('base-upload');
+        const emptyState = document.getElementById('empty-state');
+
+        upload.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    emptyState.style.display = 'none';
+                    // Center and scale image to fit canvas
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        function exportImage() {
+            const link = document.createElement('a');
+            link.download = 'image-hat-output.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+    </script>
+</body>
+</html>
